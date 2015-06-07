@@ -234,6 +234,29 @@
       _disqusHandler();
     });
 
+    // Wrap all YouTube embeds to be responsive
+    // =================
+    var $videos = $( 'iframe[src^="https://www.youtube.com"]' );
+    if ( $videos.length ) {
+      $videos.each( function( idx, el ) {
+        $( el )
+          .data( 'aspectRatio', this.height / this.width )
+          .removeAttr( 'height' )
+          .removeAttr( 'width' );
+      } );
+      var resizeVideos = function() {
+        var newWidth = $videos[0].parentNode.clientWidth;
+        $videos.each( function( idx, el ) {
+          var $el = $( el );
+          $el
+            .width( newWidth )
+            .height( newWidth * $el.data( 'aspectRatio' ) );
+        } );
+      };
+      $( window ).on( 'resize.fluidYoutube', resizeVideos );
+      resizeVideos();
+    }
+
   });
 
 })(jQuery, window, document);
